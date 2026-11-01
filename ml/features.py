@@ -128,3 +128,6 @@ def build_features(df:pd.DataFrame,)-> tuple[dict[str, np.ndarray], dict[str, np
             )
 
     return features, labels
+
+
+build_feature_pipeline = build_features

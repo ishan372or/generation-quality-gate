@@ -7,14 +7,14 @@ dataset:
 
   defect_rate: 0.4
   label_noise_rate: 0.05
-  hard_cases_rate: 0.1
+  hard_case_rate: 0.1
   lookalike_rate: 0.1
   lighting_shift_rate: 0.1
   identity_mismatch_rate: 0.15
 
 splits:
   train: 0.7
-  val: 0.15
+  validation: 0.15
   test: 0.15
 
 shifted_dataset:

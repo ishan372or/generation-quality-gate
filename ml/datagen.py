@@ -4,7 +4,7 @@ import yaml
 
 from ml.schema import FEATURE_SCHEMA
 
-def load_config(config_path: str)->dict
+def load_config(config_path: str) -> dict:
     """Load dataset configuration from YAML file"""
     with open(config_path,'r') as file:
         return yaml.safe_load(file)
@@ -21,7 +21,7 @@ def generate_data(config_path: str = "config/data.yaml", shifted: bool = False)-
     shots_per_character = dataset_config["shots_per_character"]
     defect_rate = dataset_config["defect_rate"]
     label_noise_rate = dataset_config["label_noise_rate"]
-    hard_case_rate = dataset_config["hard_case_rate"]
+    hard_case_rate = dataset_config.get("hard_case_rate", dataset_config.get("hard_cases_rate"))
     lighting_shift_rate = dataset_config["lighting_shift_rate"]
     lookalike_rate = dataset_config["lookalike_rate"]
     identity_mismatch_rate = dataset_config["identity_mismatch_rate"]
@@ -48,7 +48,7 @@ def generate_data(config_path: str = "config/data.yaml", shifted: bool = False)-
                 reference_embedding=base_embedding+rng.normal(0,0.2,size=FEATURE_SCHEMA.embedding_dim)
             else:
                 reference_embedding=rng.normal(0,1,size=FEATURE_SCHEMA.embedding_dim)
-                character_references[character_id] = reference_embedding
+            character_references[character_id] = reference_embedding
                 
         for character_id in range(characters_per_project):
             true_reference_embedding=character_references[character_id]
@@ -186,4 +186,7 @@ def generate_data(config_path: str = "config/data.yaml", shifted: bool = False)-
         df.loc[noisy_indices, "has_defect"] = (1- df.loc[noisy_indices, "has_defect"])
 
     return df
+
+
+generate_dataset = generate_data
 

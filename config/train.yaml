@@ -19,7 +19,7 @@ models:
     max_depth: 4
     learning_rate: 0.05
 
-caliberation:
+calibration:
   method: isotonic
 
 evaluation:
