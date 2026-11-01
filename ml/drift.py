@@ -24,7 +24,6 @@ def calculate_psi(reference: np.ndarray,current: np.ndarray,n_bins: int = 10) ->
         return 0.0
 
     reference_counts, _ = np.histogram(reference,bins=bin_edges)
-
     current_counts, _ = np.histogram(current,bins=bin_edges)
     reference_proportions = (reference_counts/len(reference))
     current_proportions = (current_counts/len(current))
@@ -39,9 +38,8 @@ def calculate_psi(reference: np.ndarray,current: np.ndarray,n_bins: int = 10) ->
         epsilon,
         None,
     )
-    psi = np.sum((current_proportions- reference_proportions)* np.log(current_proportions/ reference_proportions))
+    psi = np.sum((current_proportions-reference_proportions)* np.log(current_proportions/ reference_proportions))
     return float(psi)
-
 
 def calculate_feature_psi(
     reference_df: pd.DataFrame,

@@ -1,9 +1,6 @@
+from pathlib import Path
+
 import numpy as np
-import pandas as pd
-import yaml
-
-from sklearn.model_selection import GroupShuffleSplit
-
 import pandas as pd
 import yaml
 from sklearn.model_selection import GroupShuffleSplit
@@ -11,7 +8,6 @@ from sklearn.model_selection import GroupShuffleSplit
 
 def load_config(config_path: str) -> dict:
     """Load dataset configuration from YAML."""
-
     with open(config_path, "r") as file:
         return yaml.safe_load(file)
 
@@ -20,19 +16,20 @@ def split_dataset(
     df: pd.DataFrame,
     config_path: str = "config/data.yaml",
 ):
-    config = load_config(config_path)
+    """Split a dataframe into train/validation/test using project groups."""
 
+    config = load_config(config_path)
     split_config = config["splits"]
 
     train_ratio = split_config["train"]
     validation_ratio = split_config["validation"]
     test_ratio = split_config["test"]
-    total_ratio = (train_ratio+validation_ratio+test_ratio)
+
+    total_ratio = train_ratio + validation_ratio + test_ratio
 
     if not np.isclose(total_ratio, 1.0):
         raise ValueError(
-            f"Split ratios must sum to 1.0, "
-            f"got {total_ratio}"
+            f"Split ratios must sum to 1.0, got {total_ratio}"
         )
 
     if len(df) == 0:
@@ -42,10 +39,9 @@ def split_dataset(
         raise ValueError(
             "Dataset must contain 'project_id' for grouped splitting."
         )
-
     splitter = GroupShuffleSplit(
         n_splits=1,
-        test_size=(validation_ratio + test_ratio),
+        test_size=validation_ratio + test_ratio,
         random_state=config["seed"],
     )
 
@@ -58,12 +54,13 @@ def split_dataset(
 
     train_df = df.iloc[train_indices].reset_index(drop=True)
     temp_df = df.iloc[temp_indices].reset_index(drop=True)
-
-    validation_fraction = (validation_ratio/(validation_ratio + test_ratio))
+    validation_fraction = validation_ratio / (
+        validation_ratio + test_ratio
+    )
 
     splitter = GroupShuffleSplit(
         n_splits=1,
-        test_size=(1.0 - validation_fraction),
+        test_size=1.0 - validation_fraction,
         random_state=config["seed"],
     )
 
@@ -75,7 +72,6 @@ def split_dataset(
     )
 
     validation_df = temp_df.iloc[validation_indices].reset_index(drop=True)
-
     test_df = temp_df.iloc[test_indices].reset_index(drop=True)
 
     train_projects = set(train_df["project_id"])
@@ -99,4 +95,49 @@ def split_dataset(
 
     return train_df, validation_df, test_df
 
+
+def create_splits(
+    data_path: str,
+    output_dir: str = "artifacts/splits",
+    config_path: str = "config/data.yaml",
+):
+    """
+    Load the generated dataset, create grouped splits,
+    and save train/validation/test CSV files.
+    """
+
+    data_path = Path(data_path)
+    output_dir = Path(output_dir)
+
+    if not data_path.exists():
+        raise FileNotFoundError(
+            f"Dataset not found: {data_path}"
+        )
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"Loading dataset: {data_path}")
+
+    df = pd.read_csv(data_path)
+
+    print(f"Dataset size: {len(df)} rows")
+
+    train_df, validation_df, test_df = split_dataset(
+        df=df,
+        config_path=config_path,
+    )
+
+    train_path = output_dir / "train.csv"
+    validation_path = output_dir / "validation.csv"
+    test_path = output_dir / "test.csv"
+
+    train_df.to_csv(train_path, index=False)
+    validation_df.to_csv(validation_path, index=False)
+    test_df.to_csv(test_path, index=False)
+
+    print(f"[OK] Train:      {len(train_df)} rows -> {train_path}")
+    print(f"[OK] Validation: {len(validation_df)} rows -> {validation_path}")
+    print(f"[OK] Test:       {len(test_df)} rows -> {test_path}")
+
+    return train_df, validation_df, test_df
 
