@@ -1,0 +1,23 @@
+seed: 42
+
+dataset:
+  n_projects: 20
+  characters_per_project: 5
+  shots_per_character: 50
+
+  defect_rate: 0.4
+  label_noise_rate: 0.05
+  hard_cases_rate: 0.1
+  lookalike_rate: 0.1
+  lighting_shift_rate: 0.1
+  identity_mismatch_rate: 0.15
+
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+shifted_dataset:
+  enabled: true
+  lighting_shift_rate: 0.40
+  defect_rate: 0.08

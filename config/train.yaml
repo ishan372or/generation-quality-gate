@@ -1,0 +1,45 @@
+seed: 42
+
+models:
+  identity:
+    type: xgboost
+    n_estimators: 150
+    max_depth: 4
+    learning_rate: 0.05
+
+  defect:
+    type: xgboost
+    n_estimators: 150
+    max_depth: 4
+    learning_rate: 0.05
+
+  adherence:
+    type: xgboost
+    n_estimators: 150
+    max_depth: 4
+    learning_rate: 0.05
+
+caliberation:
+  method: isotonic
+
+evaluation:
+  target_precision: 0.90
+  bootstrap_samples: 500
+
+decision:
+  thresholds:
+    identity_keep: 0.90
+    defect_regenerate: 0.70
+    adherence_keep: 0.85
+
+  costs:
+    false_keep: 10
+    false_regenerate: 3
+    review: 1
+    correct_keep: 0
+    correct_regenerate: 0
+
+promotion_gate:
+  min_pr_auc: 0.90
+  min_recall: 0.80
+  max_slice_regression: 0.05
