@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-feature_schema_version="1.0.0"
+feature_schema_version="fs1"
 FEATURE_SCHEMA_VERSION = feature_schema_version
 
 embedding_dim=64

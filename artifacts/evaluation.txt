@@ -1,0 +1,36 @@
+Generation Quality Gate Evaluation
+========================================
+
+Scorer Metrics
+----------------------------------------
+
+IDENTITY
+PR-AUC: 0.9973
+PR-AUC 95% CI: (0.9931, 1.0000)
+Recall @ target precision: 1.0000
+Recall 95% CI: (1.0000, 1.0000)
+ECE: 0.0159
+
+DEFECT
+PR-AUC: 0.9213
+PR-AUC 95% CI: (0.8862, 0.9490)
+Recall @ target precision: 0.9161
+Recall 95% CI: (0.8847, 0.9435)
+ECE: 0.0160
+
+ADHERENCE
+PR-AUC: 0.9805
+PR-AUC 95% CI: (0.9725, 0.9871)
+Recall @ target precision: 0.9352
+Recall 95% CI: (0.8544, 0.9714)
+ECE: 0.0252
+
+Decision Policy
+----------------------------------------
+Expected cost / 1000 shots: 281.33
+Total cost: 211.00
+Samples: 750
+Decision counts:
+  KEEP: 129
+  REGENERATE: 529
+  REVIEW: 92

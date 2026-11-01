@@ -4,13 +4,14 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg://postgres:ishan372%40OR@localhost:5432/quality_gate",
+    "sqlite:///./artifacts/generation_quality_gate.db",
 )
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-)
+engine_options = {"pool_pre_ping": True}
+if DATABASE_URL.startswith("sqlite"):
+    os.makedirs("artifacts", exist_ok=True)
+    engine_options["connect_args"] = {"check_same_thread": False}
+engine = create_engine(DATABASE_URL, **engine_options)
 
 SessionLocal = sessionmaker(
     bind=engine,

@@ -20,7 +20,7 @@ def calculate_sha256(path: str) -> str:
 
 def create_bundle(
     model_dir: str = "artifacts/models",
-    output_dir: str = "artifacts/bundles/v1",
+    output_dir: str = "artifacts/bundle",
     model_version: str = "v1",
     dataset_hash: str = "unknown",
 ) -> dict:

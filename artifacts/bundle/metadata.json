@@ -1,0 +1,18 @@
+{
+  "model_version": "v1",
+  "feature_schema_version": "fs1",
+  "dataset_hash": "unknown",
+  "scorers": [
+    "identity",
+    "defect",
+    "adherence"
+  ],
+  "files": {
+    "identity.joblib": "82fb547ec0fe618ee36b42228c49bb9d88cf6d67f9c5f4dbdbcdc9f042b8a196",
+    "identity_calibrator.joblib": "87776ef50af391e22fa784871a9e1952df5736f8155829862e71cfd23a6ca02b",
+    "defect.joblib": "0befcdc12f3560a053fe0c4b92d3064305c16daf7f00fc274c022646a9bbe947",
+    "defect_calibrator.joblib": "19a1630865de3495c352a4c57ac358c2c48a93bd0ecdbf22ef7bf79d707b4af0",
+    "adherence.joblib": "f2eca05df0da832663b3fd78272e58a67079046880f5d793982b57d1c61698f7",
+    "adherence_calibrator.joblib": "749612d76594dd31d4c4a539b3bf72cfd6fa49f78e9128ee17b32164ec6315dc"
+  }
+}

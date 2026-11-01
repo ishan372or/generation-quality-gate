@@ -1,0 +1,61 @@
+services:
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  model-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.model-server
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./artifacts/generation_quality_gate.db}
+      MODEL_BUNDLE_PATH: /app/artifacts/bundle
+    expose:
+      - "8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  api-1: &api
+    build: .
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./artifacts/generation_quality_gate.db}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      MODEL_SERVER_URL: ${MODEL_SERVER_URL:-http://model-server:8001}
+      MODEL_VERSION: ${MODEL_VERSION:-v1}
+      FEATURE_SCHEMA_VERSION: ${FEATURE_SCHEMA_VERSION:-fs1}
+      MODEL_BUNDLE_PATH: /app/artifacts/bundle
+    depends_on:
+      redis:
+        condition: service_healthy
+      model-server:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  api-2:
+    <<: *api
+    ports: []
+
+  dashboard:
+    build: .
+    command: ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./artifacts/generation_quality_gate.db}
+      API_URL: http://api-1:8000
+    depends_on:
+      api-1:
+        condition: service_healthy
+    ports:
+      - "${DASHBOARD_PORT:-8501}:8501"
