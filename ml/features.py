@@ -1,10 +1,22 @@
 import numpy as np
 import pandas as pd
+import ast
 
 from ml.schema import FEATURE_SCHEMA
 
+def _to_array(value):
+    if isinstance(value, np.ndarray):
+        return value.astype(np.float32)
 
-def _to_array(value) -> np.ndarray:
+    if isinstance(value, list):
+        return np.asarray(value, dtype=np.float32)
+
+    if isinstance(value, str):
+        value = value.strip()
+        if "," in value:
+            return np.asarray(ast.literal_eval(value), dtype=np.float32)
+        return np.fromstring(value.strip("[]"), sep=" ", dtype=np.float32)
+
     return np.asarray(value, dtype=np.float32)
 
 def build_identity_features(

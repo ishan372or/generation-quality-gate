@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import yaml
+from pathlib import Path
 
 from ml.schema import FEATURE_SCHEMA
 
@@ -187,6 +188,25 @@ def generate_data(config_path: str = "config/data.yaml", shifted: bool = False)-
 
     return df
 
+def generate_dataset(
+    config_path: str = "config/data.yaml",
+    output_path: str = "artifacts/data/dataset.parquet",
+    shifted: bool = False,
+):
+    """Generate synthetic data and save it as a Parquet file."""
 
-generate_dataset = generate_data
+    df = generate_data(
+        config_path=config_path,
+        shifted=shifted,
+    )
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    df.to_parquet(output_path, index=False)
+
+    print(f"[OK] Generated {len(df)} rows")
+    print(f"[OK] Saved dataset to {output_path}")
+
+    return df
 

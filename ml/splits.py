@@ -117,8 +117,11 @@ def create_splits(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Loading dataset: {data_path}")
-
-    df = pd.read_csv(data_path)
+    
+    if str(data_path).lower().endswith(".parquet"):
+        df = pd.read_parquet(data_path)
+    else:
+        df = pd.read_csv(data_path)
 
     print(f"Dataset size: {len(df)} rows")
 
