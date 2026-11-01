@@ -59,5 +59,3 @@ def apply_calibrators(
     return calibrated_probabilities
 
 
-# Compatibility alias for the correctly-spelled module name used by the evaluator.
-fit_calibrators = fit_all_calibrators
